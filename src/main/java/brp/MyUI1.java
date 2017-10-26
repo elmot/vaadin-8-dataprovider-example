@@ -55,20 +55,25 @@ public class MyUI1 extends UI {
         layout.addComponent(includesCB, 1, 0);
         progressBar = new ProgressBar();
         progressBar.setIndeterminate(true);
-        layout.addComponent(progressBar,0,1,1,1);
+        layout.addComponent(progressBar, 0, 1, 1, 1);
         layout.addComponent(grid, 0, 2, 1, 2);
         setContent(layout);
         new Thread(() -> {
             try {
-                Thread.sleep(5000);
-                this.access(() ->{
-                    grid.setDataProvider(dataProvider);
-                    progressBar.setVisible(false);
-                });
-
-
+                Thread.sleep(3000);
             } catch (InterruptedException ignored) {
             }
+            this.access(() -> {
+                grid.setDataProvider(dataProvider);
+                MyUI1.this.push();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ignored) {
+                }
+                progressBar.setVisible(false);
+                MyUI1.this.push();
+            });
+
 
         }).start();
     }
