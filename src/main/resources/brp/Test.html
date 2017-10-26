@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;GENERATE_GETTERS&quot;:false,&quot;JAVA_SOURCES_ROOT&quot;:&quot;src/main/java&quot;,&quot;THEME&quot;:&quot;mytheme&quot;}">
+  <meta name="vaadin-version" content="8.0.5">
+ </head>
+ <body>
+  <vaadin-vertical-layout size-full>
+   <vaadin-grid-layout caption="-" size-full :middle :expand>
+    <row>
+     <column>
+      <vaadin-label plain-text>
+        Date range 
+      </vaadin-label>
+     </column>
+     <column expand="1">
+      <vaadin-date-field width-full></vaadin-date-field>
+     </column>
+     <column>
+      <vaadin-label plain-text>
+        - 
+      </vaadin-label>
+     </column>
+     <column expand="1">
+      <vaadin-date-field width-full></vaadin-date-field>
+     </column>
+    </row>
+    <row expand="1">
+     <column colspan="3" rowspan="4"></column>
+     <column>
+      <vaadin7-horizontal-layout size-full></vaadin7-horizontal-layout>
+     </column>
+    </row>
+    <row></row>
+    <row></row>
+    <row></row>
+   </vaadin-grid-layout>
+  </vaadin-vertical-layout>
+ </body>
+</html>
