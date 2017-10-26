@@ -3,6 +3,7 @@ package brp;
 import brp.data.ExampleDataProvider;
 import brp.data.SomeStuff;
 import brp.data.StuffFilter;
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.data.Binder;
@@ -16,9 +17,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser window
@@ -28,12 +26,15 @@ import java.util.stream.Stream;
  * overridden to add component to the user interface and initialize non-component functionality.
  */
 @Theme("mytheme")
+@Push
 public class MyUI1 extends UI {
+
+    private ProgressBar progressBar;
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         ConfigurableFilterDataProvider<SomeStuff, Void, StuffFilter> dataProvider = dataProvider();
-        Grid<SomeStuff> grid = new Grid<>(dataProvider);
+        Grid<SomeStuff> grid = new Grid<>();
         grid.setSizeFull();
         grid.addColumn(SomeStuff::getId).setCaption("Id");
         grid.addColumn(SomeStuff::getName).setCaption("Name");
@@ -45,26 +46,33 @@ public class MyUI1 extends UI {
         stuffFilterBinder.setBean(new StuffFilter());
         stuffFilterBinder.addValueChangeListener(e -> dataProvider.setFilter(stuffFilterBinder.getBean()));
 
-        GridLayout layout = new GridLayout(2, 2);
+        GridLayout layout = new GridLayout(2, 3);
         layout.setSpacing(true);
         layout.setMargin(true);
         layout.setSizeFull();
-        layout.setRowExpandRatio(1, 1);
+        layout.setRowExpandRatio(2, 1);
         layout.addComponent(textField, 0, 0);
         layout.addComponent(includesCB, 1, 0);
-        layout.addComponent(grid, 0, 1, 1, 1);
+        progressBar = new ProgressBar();
+        progressBar.setIndeterminate(true);
+        layout.addComponent(progressBar,0,1,1,1);
+        layout.addComponent(grid, 0, 2, 1, 2);
         setContent(layout);
+        new Thread(() -> {
+            try {
+                Thread.sleep(5000);
+                this.access(() ->{
+                    grid.setDataProvider(dataProvider);
+                    progressBar.setVisible(false);
+                });
+
+
+            } catch (InterruptedException ignored) {
+            }
+
+        }).start();
     }
 
-    private Stream<SomeStuff> filteredStream(List<SomeStuff> list,StuffFilter filter) {
-        Predicate<SomeStuff> predicate;
-        if(filter.isIncludes()) {
-            predicate = stuff->stuff.getName().contains(filter.getFragment());
-        } else {
-            predicate = stuff->stuff.getName().startsWith(filter.getFragment());
-        }
-        return list.stream().filter(predicate);
-    }
     private ConfigurableFilterDataProvider<SomeStuff, Void, StuffFilter> dataProvider() {
         ArrayList<SomeStuff> someStuffs = loadData();
         return new ExampleDataProvider(someStuffs);
